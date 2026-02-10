@@ -3,10 +3,12 @@
 // ============================
 
 export interface Player {
-    id: number;
+    id: number | string;
     name: string;
     score: number;
     color: string;
+    isHost?: boolean;
+    connected?: boolean;
 }
 
 export interface Question {

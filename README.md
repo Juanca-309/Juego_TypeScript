@@ -3,34 +3,40 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue?style=for-the-badge&logo=typescript)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
 
 ## 🎮 Descripción
 
-**Ruleta TypeScript** es un juego interactivo épico de preguntas y respuestas sobre TypeScript, diseñado con animaciones espectaculares y una experiencia de usuario premium. Perfecto para aprender TypeScript mientras te diviertes con amigos o compañeros de trabajo.
+**Ruleta TypeScript** es un juego interactivo **MULTIJUGADOR ONLINE en tiempo real** de preguntas y respuestas sobre TypeScript. Cada jugador puede unirse desde su propio móvil u ordenador usando un código de sala. Diseñado con animaciones espectaculares y una experiencia de usuario premium.
 
 ### ✨ Características Principales
 
+- 🌐 **Multijugador Online Real-Time**: Cada jugador en su dispositivo
 - 🎡 **Ruleta Animada**: Ruleta interactiva con 8 segmentos de diferentes puntuaciones
-- 👥 **Multijugador**: Soporta de 2 a 10 jugadores simultáneos
+- 👥 **2-10 Jugadores**: Sistema de salas con código único
+- 📱 **100% Responsive**: Diseñado para móviles, tablets y desktop
 - ❓ **50+ Preguntas**: Banco extenso de preguntas sobre TypeScript con 3 niveles de dificultad
 - 🎨 **Diseño Épico**: Interfaz moderna con gradientes, animaciones y efectos visuales impresionantes
 - ⏱️ **Timer de Preguntas**: 30 segundos para responder cada pregunta
-- 🏆 **Sistema de Puntuación**: Podio con los 3 mejores jugadores y tabla de clasificación
+- 🏆 **Sistema de Puntuación**: Podio con los 3 mejores jugadores y tabla de clasificación en tiempo real
 - 🎊 **Efectos Especiales**: Confetti, partículas animadas y notificaciones interactivas
-- 📱 **Responsive**: Diseño adaptable a diferentes tamaños de pantalla
-- 🚀 **Sin Backend**: 100% Frontend - funciona directamente desde el navegador
+- 🔒 **Sistema de Anfitrión**: Control del juego por el creador de la sala
 
 ## 🎯 Mecánica del Juego
 
-1. **Añadir Jugadores**: Entre 2 y 10 jugadores pueden unirse al juego
-2. **Girar la Ruleta**: Cada jugador gira la ruleta en su turno
-3. **Responder Preguntas**: La ruleta determina los puntos en juego (50-500 pts)
-4. **Ganar Puntos**: Responde correctamente en 30 segundos para ganar puntos
-5. **Victoria**: El jugador con más puntos al final de 10 rondas gana
+1. **Crear/Unirse a Sala**: Un jugador crea una sala y comparte el código con otros
+2. **Espera en Lobby**: Los jugadores se unen usando el código de 6 caracteres
+3. **Girar la Ruleta**: Cada jugador gira la ruleta en su turno desde su dispositivo
+4. **Responder Preguntas**: La ruleta determina los puntos en juego (50-500 pts)
+5. **Ganar Puntos**: Solo el jugador del turno puede responder en 30 segundos
+6. **Victoria**: El jugador con más puntos al final de 10 rondas gana
 
 ## 🛠️ Tecnologías Utilizadas
 
 - **TypeScript**: Lógica del juego con tipado fuerte
+- **Node.js + Express**: Servidor backend
+- **Socket.IO**: Comunicación en tiempo real
 - **HTML5**: Estructura semántica
 - **CSS3**: Animaciones, gradientes y efectos visuales avanzados
 - **SVG**: Gráficos vectoriales para la ruleta
@@ -57,58 +63,83 @@ npm install
 
 # Compilar TypeScript
 npm run build
+
+# Iniciar el servidor
+npm start
 ```
 
 ### Ejecutar el Juego
 
-Simplemente abre el archivo `index.html` en tu navegador favorito:
+El servidor se iniciará en `http://localhost:3000`
 
 ```bash
-# Opción 1: Abrir directamente
-start index.html  # Windows
-open index.html   # macOS
-xdg-open index.html  # Linux
+# Iniciar servidor
+npm start
 
-# Opción 2: Usar un servidor local (recomendado)
-npx serve .
-# O usar Live Server en VS Code
+# El servidor mostrará:
+# 🌐 Servidor corriendo en: http://localhost:3000
+# 📱 Acceso desde móviles: http://[TU_IP_LOCAL]:3000
 ```
+
+### Jugar desde dispositivos móviles
+
+1. Conecta tu móvil a la misma red WiFi que el servidor
+2. Encuentra la IP local de tu ordenador:
+   - **Windows**: `ipconfig` (busca IPv4)
+   - **Mac/Linux**: `ifconfig` o `ip addr`
+3. Abre el navegador del móvil y ve a `http://[TU-IP]:3000`
+4. ¡Listo para jugar!
 
 ### Modo Desarrollo
 
-Para compilar automáticamente cuando edites archivos TypeScript:
+Para compilar automáticamente al editar archivos TypeScript:
 
 ```bash
+# En una terminal
 npm run dev
+
+# En otra terminal
+npm run server
 ```
 
 ## 📚 Estructura del Proyecto
 
 ```
 Juego_TypeScript/
+├── server/
+│   └── index.js         # Servidor Socket.IO
 ├── src/
-│   ├── game.ts          # Lógica principal del juego
+│   ├── game-online.ts   # Cliente multijugador online
+│   ├── game.ts          # Cliente local (legacy)
 │   ├── types.ts         # Interfaces y tipos TypeScript
 │   ├── questions.ts     # Banco de 50+ preguntas
 │   └── utils.ts         # Utilidades y helpers
 ├── dist/                # JavaScript compilado
 ├── index.html           # Archivo principal HTML
-├── styles.css           # Estilos y animaciones
+├── styles.css           # Estilos y animaciones responsive
 ├── tsconfig.json        # Configuración TypeScript
 ├── package.json         # Dependencias del proyecto
 └── README.md           # Este archivo
 ```
 
-## 🎨 Capturas de Pantalla
+## 🎮 Cómo Jugar Online
 
-### Pantalla de Inicio
-Interfaz elegante para añadir jugadores con efectos de partículas animadas.
+### Para el Anfitrión:
 
-### Pantalla de Juego
-Ruleta interactiva girando con animaciones fluidas y panel de pregunta modal.
+1. Abre el juego en tu navegador
+2. Haz clic en "Crear Sala Nueva"
+3. Ingresa tu nombre
+4. Comparte el código de 6 caracteres con tus amigos
+5. Espera a que se unan (mínimo 2 jugadores)
+6. Haz clic en "Comenzar Juego"
 
-### Pantalla de Resultados
-Podio animado con los 3 mejores jugadores y efectos de confetti.
+### Para los Jugadores:
+
+1. Abre el juego en tu navegador (móvil o PC)
+2. Haz clic en "Unirse a Sala"
+3. Ingresa tu nombre y el código de sala
+4. Espera en el lobby a que comience el juego
+5. ¡Juega desde tu dispositivo!
 
 ## 🎓 Categorías de Preguntas
 
@@ -140,38 +171,46 @@ Edita `src/questions.ts` y añade nuevas preguntas siguiendo el formato:
 }
 ```
 
-### Modificar Segmentos de la Ruleta
+### Cambiar Puerto del Servidor
 
-En `src/game.ts`, método `createWheelSegments()`, puedes modificar los puntos y colores:
+Edita `server/index.js` o usa variable de entorno:
 
-```typescript
-{ points: 100, color: '#3b82f6', label: '100' }
+```bash
+PORT=8080 npm start
 ```
 
-### Cambiar Número de Rondas
+### Modificar Número de Rondas
 
-En `src/game.ts`, modifica la propiedad `totalRounds` en el constructor.
+En `server/index.js`, cambia `totalRounds: 10` al valor deseado.
 
-## 🚀 Características Avanzadas
+## 📱 Responsive Design
 
-- **Animaciones CSS**: Transiciones suaves y keyframe animations
-- **Efectos de Confetti**: Canvas animation con partículas físicas
-- **Sistema de Notificaciones**: Toast notifications con auto-dismiss
-- **Timer Visual**: Barra de progreso animada con degradado de colores
-- **Scoreboard en Tiempo Real**: Actualización dinámica de puntuaciones
-- **Responsive Design**: Adapta a móviles, tablets y desktop
-- **Partículas de Fondo**: Animación continua de partículas flotantes
+El juego está optimizado para:
+
+- 📱 **Móviles** (320px+): Interfaz simplificada y táctil
+- 📱 **Tablets** (768px+): Layout adaptado
+- 💻 **Desktop** (1024px+): Experiencia completa con sidebar
+
+## 🚀 Características Técnicas
+
+- **WebSockets**: Comunicación bidireccional en tiempo real
+- **Sistema de Salas**: Múltiples partidas simultáneas
+- **Sincronización**: Estado del juego compartido entre todos los clientes
+- **Reconexión**: Manejo de desconexiones temporales
+- **Validación**: Solo jugadores autorizados pueden ejecutar acciones
+- **Responsive**: Mobile-first design con breakpoints optimizados
 
 ## 📈 Próximas Mejoras
 
+- [ ] Chat en tiempo real entre jugadores
 - [ ] Sonidos y música de fondo
-- [ ] Modo oscuro/claro
-- [ ] Guardar puntuaciones en localStorage
-- [ ] Compartir resultados en redes sociales
+- [ ] Modo espectador
+- [ ] Historial de partidas
+- [ ] Rankings globales
 - [ ] Más categorías de preguntas
-- [ ] Modo de dificultad seleccionable
+- [ ] Sistema de avatares personalizados
 - [ ] Achievements y badges
-- [ ] Multiplayer online
+- [ ] Exportar resultados como imagen
 
 ## 🤝 Contribuciones
 
@@ -182,6 +221,25 @@ En `src/game.ts`, modifica la propiedad `totalRounds` en el constructor.
 3. Commit tus cambios (`git commit -m 'Añadir nueva característica'`)
 4. Push a la rama (`git push origin feature/nueva-caracteristica`)
 5. Abre un Pull Request
+
+## 🐛 Solución de Problemas
+
+### No puedo conectarme desde el móvil
+
+- Verifica que ambos dispositivos estén en la misma red WiFi
+- Asegúrate de que el firewall no bloquee el puerto 3000
+- Usa la IP local correcta (no 127.0.0.1 o localhost)
+
+### El juego se desconecta
+
+- Verifica tu conexión a internet
+- El servidor debe estar corriendo continuamente
+- Revisa la consola del servidor para errores
+
+### Las preguntas no aparecen
+
+- Asegúrate de haber compilado el proyecto: `npm run build`
+- Verifica que `dist/questions.js` exista
 
 ## 📝 Licencia
 
@@ -194,10 +252,11 @@ Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE para más deta
 ## 🌟 Agradecimientos
 
 - Fuentes: Google Fonts (Orbitron, Poppins)
+- Socket.IO por la comunicación en tiempo real
 - Inspiración: Juegos de ruleta clásicos y quiz shows
 
 ---
 
 ⭐ Si te gusta este proyecto, dale una estrella en GitHub!
 
-🎮 ¡Diviértete aprendiendo TypeScript!
+🎮 ¡Diviértete aprendiendo TypeScript con tus amigos online!
