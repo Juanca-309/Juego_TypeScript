@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>🎡 Ruleta TypeScript - Lobby</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <!-- Partículas de fondo -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Pantalla de lobby/sala de espera -->
+    <div class="screen" id="lobbyScreen">
+        <div class="container">
+            <div class="lobby-header">
+                <button class="btn btn-small btn-back" id="backToMenuBtn">
+                    ← Volver
+                </button>
+                <div class="room-code-display">
+                    <span class="label">Código de Sala:</span>
+                    <span class="room-code" id="roomCodeDisplay">------</span>
+                    <button class="btn btn-small btn-copy" id="copyCodeBtn" title="Copiar código">
+                        📋
+                    </button>
+                </div>
+            </div>
+            
+            <div class="lobby-content">
+                <h2 class="lobby-title">Sala de Espera</h2>
+                <p class="lobby-subtitle">Esperando a que más jugadores se unan...</p>
+                
+                <div class="players-grid" id="playersGrid"></div>
+                
+                <div class="lobby-actions">
+                    <button class="btn btn-start btn-large" id="startGameBtnLobby" disabled>
+                        🚀 Comenzar Juego
+                    </button>
+                    <p class="lobby-hint" id="lobbyHint">Se necesitan al menos 2 jugadores</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notificaciones flotantes -->
+    <div class="notifications" id="notifications"></div>
+    
+    <script type="module" src="dist/lobby.js"></script>
+</body>
+</html>

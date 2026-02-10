@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>🎡 Ruleta TypeScript - Juego</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <!-- Pantalla de juego -->
+    <div class="screen" id="gameScreen">
+        <!-- Header con información -->
+        <header class="game-header">
+            <div class="game-info">
+                <div class="round-display">
+                    <span class="label">Ronda</span>
+                    <span class="value" id="currentRound">1</span>/<span id="totalRounds">10</span>
+                </div>
+            </div>
+            
+            <div class="turn-display">
+                <span class="label">Turno de:</span>
+                <span class="current-player" id="currentPlayerName">Jugador 1</span>
+            </div>
+            
+            <button class="btn btn-small btn-exit" id="exitGameBtn">
+                ❌ Salir
+            </button>
+        </header>
+        
+        <!-- Área de la ruleta -->
+        <div class="wheel-container">
+            <div class="wheel-wrapper">
+                <!-- Indicador -->
+                <div class="wheel-pointer"></div>
+                
+                <!-- SVG de la ruleta -->
+                <svg class="wheel" id="wheelSvg" viewBox="0 0 500 500">
+                    <!-- Los segmentos se generarán dinámicamente -->
+                </svg>
+                
+                <button class="spin-button" id="spinBtn">
+                    <span class="spin-text">GIRAR</span>
+                    <span class="spin-icon">🎯</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Panel de pregunta -->
+        <div class="question-panel hidden" id="questionPanel">
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="category-badge" id="categoryBadge">PREGUNTA</span>
+                    <span class="points-badge" id="pointsBadge">100 pts</span>
+                </div>
+                <h3 class="question-text" id="questionText"></h3>
+                <div class="answers-grid" id="answersGrid"></div>
+                <div class="question-timer">
+                    <div class="timer-bar" id="timerBar"></div>
+                    <span class="timer-text" id="timerText">30s</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scoreboard -->
+        <aside class="scoreboard">
+            <h3 class="scoreboard-title">🏆 Puntuaciones</h3>
+            <div class="scoreboard-list" id="scoreboardList"></div>
+        </aside>
+    </div>
+    
+    <!-- Notificaciones flotantes -->
+    <div class="notifications" id="notifications"></div>
+    
+    <!-- Efectos especiales -->
+    <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+    
+    <script type="module" src="dist/game-page.js"></script>
+</body>
+</html>

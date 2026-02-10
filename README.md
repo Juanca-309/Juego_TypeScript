@@ -36,11 +36,47 @@
 
 - **TypeScript**: Lógica del juego con tipado fuerte
 - **Node.js + Express**: Servidor backend
-- **Socket.IO**: Comunicación en tiempo real
-- **HTML5**: Estructura semántica
+- **Socket.IO**: Comunicación en tiempo real bidireccional
+- **HTML5**: Estructura semántica con arquitectura multi-página
 - **CSS3**: Animaciones, gradientes y efectos visuales avanzados
 - **SVG**: Gráficos vectoriales para la ruleta
 - **Canvas API**: Animación de confetti
+- **LocalStorage**: Persistencia de estado entre páginas
+
+## 🏗️ Estructura del Proyecto
+
+El proyecto utiliza una arquitectura **multi-página** para mejorar el rendimiento y la organización:
+
+```
+Juego_TypeScript/
+├── index.html              # Redirección al menú principal
+├── menu.html               # Pantalla de menú principal
+├── lobby.html              # Sala de espera
+├── game.html               # Pantalla de juego activo
+├── results.html            # Pantalla de resultados finales
+├── styles.css              # Estilos globales responsivos
+├── server/
+│   └── index.js            # Servidor Node.js + Socket.IO
+├── src/
+│   ├── menu.ts             # Lógica del menú principal
+│   ├── lobby.ts            # Lógica de la sala de espera
+│   ├── game-page.ts        # Lógica del juego
+│   ├── results.ts          # Lógica de resultados
+│   ├── socket-manager.ts   # Gestión del socket entre páginas
+│   ├── questions.ts        # Banco de preguntas
+│   ├── types.ts            # Definiciones de tipos
+│   └── utils.ts            # Funciones utilitarias
+└── dist/                   # Archivos JavaScript compilados
+
+```
+
+### Ventajas de la Arquitectura Multi-Página
+
+- ✅ **Mejor rendimiento**: Cada página carga solo los recursos necesarios
+- ✅ **Separación de responsabilidades**: Código más organizado y mantenible
+- ✅ **Experiencia de usuario mejorada**: Transiciones claras entre estados del juego
+- ✅ **SEO-friendly**: Cada página tiene su propio contexto
+- ✅ **Fácil navegación**: URLs específicas para cada sección
 
 ## 📦 Instalación y Uso
 

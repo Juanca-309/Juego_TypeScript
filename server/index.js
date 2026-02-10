@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
     console.log(`Usuario conectado: ${socket.id}`);
 
     // Crear nueva sala
-    socket.on('create-room', (playerName, callback) => {
+    socket.on('create-room', (playerName) => {
         const roomCode = generateRoomCode();
         const room = {
             code: roomCode,
@@ -60,31 +60,31 @@ io.on('connection', (socket) => {
         socket.roomCode = roomCode;
         
         console.log(`Sala creada: ${roomCode} por ${playerName}`);
-        callback({ success: true, roomCode, room });
+        socket.emit('room-created', { roomCode, playerId: socket.id });
     });
 
     // Unirse a sala existente
-    socket.on('join-room', (data, callback) => {
+    socket.on('join-room', (data) => {
         const { roomCode, playerName } = data;
         const room = rooms.get(roomCode);
 
         if (!room) {
-            callback({ success: false, error: 'Sala no encontrada' });
+            socket.emit('error', 'Sala no encontrada');
             return;
         }
 
         if (room.gameState.isPlaying) {
-            callback({ success: false, error: 'El juego ya ha comenzado' });
+            socket.emit('error', 'El juego ya ha comenzado');
             return;
         }
 
         if (room.players.length >= 10) {
-            callback({ success: false, error: 'Sala llena (máximo 10 jugadores)' });
+            socket.emit('error', 'Sala llena (máximo 10 jugadores)');
             return;
         }
 
         if (room.players.some(p => p.name === playerName)) {
-            callback({ success: false, error: 'Ya existe un jugador con ese nombre' });
+            socket.emit('error', 'Ya existe un jugador con ese nombre');
             return;
         }
 
@@ -102,12 +102,102 @@ io.on('connection', (socket) => {
 
         console.log(`${playerName} se unió a sala ${roomCode}`);
         
+        // Notificar al jugador que se unió
+        socket.emit('room-joined', { playerId: socket.id, players: room.players });
+        
         // Notificar a todos en la sala
-        io.to(roomCode).emit('player-joined', { player, players: room.players });
-        callback({ success: true, room });
+        io.to(roomCode).emit('players-updated', room.players);
     });
 
-    // Obtener información de la sala
+    // Reconectar a una sala existente (tras navegación de páginas)
+    socket.on('reconnect-to-room', (data) => {
+        const { roomCode, playerName, oldPlayerId } = data;
+        const room = rooms.get(roomCode);
+        
+        if (!room) {
+            socket.emit('error', 'Sala no encontrada');
+            return;
+        }
+        
+        // Buscar al jugador por nombre o ID antiguo
+        const playerIndex = room.players.findIndex(p => 
+            p.name === playerName || p.id === oldPlayerId
+        );
+        
+        if (playerIndex !== -1) {
+            // Cancelar el timeout de desconexión si existe
+            if (room.disconnectTimeouts && room.disconnectTimeouts.has(playerName)) {
+                clearTimeout(room.disconnectTimeouts.get(playerName));
+                room.disconnectTimeouts.delete(playerName);
+            }
+            
+            // Actualizar el socket ID del jugador
+            room.players[playerIndex].id = socket.id;
+            room.players[playerIndex].connected = true;
+            
+            // Si era el host, actualizar host
+            if (room.host === oldPlayerId || room.players[playerIndex].isHost) {
+                room.host = socket.id;
+            }
+            
+            socket.join(roomCode);
+            socket.roomCode = roomCode;
+            
+            console.log(`${playerName} reconectado a sala ${roomCode}`);
+            
+            // Enviar estado actualizado
+            socket.emit('reconnected', { 
+                playerId: socket.id,
+                players: room.players,
+                gameState: room.gameState
+            });
+            
+            // Notificar a los demás
+            io.to(roomCode).emit('players-updated', room.players);
+        } else {
+            socket.emit('error', 'Jugador no encontrado en la sala');
+        }
+    });
+    
+    // Obtener estado actual de la sala
+    socket.on('get-room-state', (roomCode) => {
+        const room = rooms.get(roomCode);
+        if (room) {
+            socket.emit('room-state', { 
+                players: room.players, 
+                gameState: room.gameState 
+            });
+        } else {
+            socket.emit('error', 'Sala no encontrada');
+        }
+    });
+    
+    // Salir de la sala
+    socket.on('leave-room', (roomCode) => {
+        if (!roomCode) roomCode = socket.roomCode;
+        if (!roomCode) return;
+        
+        const room = rooms.get(roomCode);
+        if (!room) return;
+        
+        // Remover jugador de la sala
+        room.players = room.players.filter(p => p.id !== socket.id);
+        socket.leave(roomCode);
+        
+        // Si era el host, cerrar la sala
+        if (room.host === socket.id) {
+            io.to(roomCode).emit('room-closed');
+            rooms.delete(roomCode);
+            console.log(`Sala ${roomCode} cerrada (host desconectado)`);
+        } else {
+            // Notificar a los demás
+            io.to(roomCode).emit('players-updated', room.players);
+        }
+        
+        socket.roomCode = null;
+    });
+
+    // Obtener información de la sala (deprecated - usar get-room-state)
     socket.on('get-room', (roomCode, callback) => {
         const room = rooms.get(roomCode);
         if (room) {
@@ -150,6 +240,26 @@ io.on('connection', (socket) => {
 
         io.to(roomCode).emit('game-started', { gameState: room.gameState, players: room.players });
         console.log(`Juego iniciado en sala ${roomCode}`);
+    });
+    
+    // Obtener estado del juego en progreso
+    socket.on('get-game-state', (roomCode) => {
+        const room = rooms.get(roomCode);
+        if (room && room.gameState.isPlaying) {
+            socket.emit('game-state-update', {
+                players: room.players,
+                currentRound: room.gameState.currentRound,
+                totalRounds: room.gameState.totalRounds,
+                currentPlayerIndex: room.gameState.currentPlayerIndex
+            });
+        } else if (room) {
+            socket.emit('room-state', { 
+                players: room.players, 
+                gameState: room.gameState 
+            });
+        } else {
+            socket.emit('error', 'Sala no encontrada');
+        }
     });
 
     // Girar ruleta
@@ -283,14 +393,37 @@ io.on('connection', (socket) => {
 
         player.connected = false;
 
-        // Si el host se desconecta y el juego no ha empezado, eliminar la sala
-        if (socket.id === room.host && !room.gameState.isPlaying) {
-            rooms.delete(roomCode);
-            io.to(roomCode).emit('room-closed');
-            console.log(`Sala ${roomCode} cerrada (host desconectado)`);
-        } else {
-            io.to(roomCode).emit('player-disconnected', { playerId: socket.id, player });
+        // Dar tiempo de reconexión (30 segundos) antes de eliminar la sala
+        // Si el host se desconecta, esperar a ver si reconecta
+        const disconnectTimeout = setTimeout(() => {
+            const currentRoom = rooms.get(roomCode);
+            if (!currentRoom) return;
+            
+            const currentPlayer = currentRoom.players.find(p => p.name === player.name);
+            
+            // Si después de 30 segundos sigue desconectado
+            if (currentPlayer && !currentPlayer.connected) {
+                // Si era el host y el juego no ha empezado, cerrar sala
+                if (player.isHost && !currentRoom.gameState.isPlaying) {
+                    rooms.delete(roomCode);
+                    io.to(roomCode).emit('room-closed');
+                    console.log(`Sala ${roomCode} cerrada (host no reconectó)`);
+                } else {
+                    // Remover jugador de la sala
+                    currentRoom.players = currentRoom.players.filter(p => p.name !== player.name);
+                    io.to(roomCode).emit('players-updated', currentRoom.players);
+                }
+            }
+        }, 30000); // 30 segundos de gracia
+        
+        // Guardar el timeout para poder cancelarlo si reconecta
+        if (!room.disconnectTimeouts) {
+            room.disconnectTimeouts = new Map();
         }
+        room.disconnectTimeouts.set(player.name, disconnectTimeout);
+        
+        // Notificar temporalmente
+        io.to(roomCode).emit('player-disconnected', { playerId: socket.id, player });
     });
 });
 
