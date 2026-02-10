@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎡 Ruleta TypeScript - La Fortuna del Código</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Partículas de fondo -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Pantalla de inicio -->
+    <div class="screen" id="startScreen">
+        <div class="container">
+            <div class="logo-container">
+                <h1 class="game-title">
+                    <span class="glow">🎡</span>
+                    <span class="title-text">RULETA</span>
+                    <span class="title-highlight">TypeScript</span>
+                </h1>
+                <p class="subtitle">La Fortuna del Código</p>
+            </div>
+            
+            <div class="player-setup">
+                <h2>Añade Jugadores</h2>
+                <div class="input-group">
+                    <input type="text" id="playerNameInput" placeholder="Nombre del jugador" maxlength="20">
+                    <button class="btn btn-add" id="addPlayerBtn">
+                        <span>➕</span> Añadir
+                    </button>
+                </div>
+                
+                <div class="players-list" id="playersList"></div>
+                
+                <button class="btn btn-start" id="startGameBtn" disabled>
+                    <span class="btn-shine"></span>
+                    🚀 Comenzar Juego
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pantalla de juego -->
+    <div class="screen hidden" id="gameScreen">
+        <!-- Header con información -->
+        <header class="game-header">
+            <div class="game-info">
+                <div class="round-display">
+                    <span class="label">Ronda</span>
+                    <span class="value" id="currentRound">1</span>/<span id="totalRounds">10</span>
+                </div>
+            </div>
+            
+            <div class="turn-display">
+                <span class="label">Turno de:</span>
+                <span class="current-player" id="currentPlayerName">Jugador 1</span>
+            </div>
+            
+            <button class="btn btn-small btn-exit" id="exitGameBtn">
+                ❌ Salir
+            </button>
+        </header>
+        
+        <!-- Área de  la ruleta -->
+        <div class="wheel-container">
+            <div class="wheel-wrapper">
+                <!-- Indicador -->
+                <div class="wheel-pointer"></div>
+                
+                <!-- SVG de la ruleta -->
+                <svg class="wheel" id="wheelSvg" viewBox="0 0 500 500">
+                    <!-- Los segmentos se generarán dinámicamente -->
+                </svg>
+                
+                <button class="spin-button" id="spinBtn">
+                    <span class="spin-text">GIRAR</span>
+                    <span class="spin-icon">🎯</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Panel de pregunta -->
+        <div class="question-panel hidden" id="questionPanel">
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="category-badge" id="categoryBadge">PREGUNTA</span>
+                    <span class="points-badge" id="pointsBadge">100 pts</span>
+                </div>
+                <h3 class="question-text" id="questionText"></h3>
+                <div class="answers-grid" id="answersGrid"></div>
+                <div class="question-timer">
+                    <div class="timer-bar" id="timerBar"></div>
+                    <span class="timer-text" id="timerText">30s</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scoreboard -->
+        <aside class="scoreboard">
+            <h3 class="scoreboard-title">🏆 Puntuaciones</h3>
+            <div class="scoreboard-list" id="scoreboardList"></div>
+        </aside>
+    </div>
+    
+    <!-- Pantalla de resultados finales -->
+    <div class="screen hidden" id="resultsScreen">
+        <div class="container">
+            <div class="results-container">
+                <h1 class="results-title">
+                    <span class="trophy-icon">🏆</span>
+                    Resultados Finales
+                </h1>
+                
+                <div class="podium" id="podium">
+                    <!-- Se generará dinámicamente -->
+                </div>
+                
+                <div class="final-scores" id="finalScores">
+                    <!-- Tabla de puntuaciones finales -->
+                </div>
+                
+                <div class="results-actions">
+                    <button class="btn btn-primary" id="playAgainBtn">
+                        🔄 Jugar de Nuevo
+                    </button>
+                    <button class="btn btn-secondary" id="newPlayersBtn">
+                        👥 Nuevos Jugadores
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notificaciones flotantes -->
+    <div class="notifications" id="notifications"></div>
+    
+    <!-- Efectos especiales -->
+    <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+    
+    <script type="module" src="dist/game.js"></script>
+</body>
+</html>
